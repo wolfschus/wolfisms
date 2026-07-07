@@ -1,0 +1,85 @@
+# ============================================================
+#  WolfISMS – Stack
+#  Zwei Betriebsmodi, umschaltbar in der .env über COMPOSE_PROFILES:
+#    (leer)  = hinter externem Reverse Proxy (z. B. Nginx Proxy Manager)
+#              -> App-Port wird veröffentlicht, KEIN Caddy.
+#    tls     = eigener HTTPS-Proxy (Caddy) mit selbst bereitgestellten
+#              Zertifikaten -> Caddy terminiert TLS auf 443.
+# ============================================================
+services:
+
+  db:
+    image: mariadb:11.4
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: ${DB_NAME}
+      MARIADB_USER: ${DB_USER}
+      MARIADB_PASSWORD: ${DB_PASSWORD}
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./db-init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
+
+  app:
+    image: ${WOLFISMS_IMAGE:-wolfisms:release}
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      DB_HOST: db
+      WOLFISMS_CONTAINER: "1"
+    # NPM-Modus: 0.0.0.0 (extern erreichbar). TLS-Modus: 127.0.0.1 (nur lokal;
+    # Caddy erreicht die App ohnehin intern über den Servicenamen).
+    ports:
+      - "${APP_BIND:-0.0.0.0}:${APP_PORT:-8000}:8000"
+
+  cron:
+    image: ${WOLFISMS_IMAGE:-wolfisms:release}
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      DB_HOST: db
+      WOLFISMS_CONTAINER: "1"
+    entrypoint: ["/usr/local/bin/wolfisms-cron-entry.sh"]
+    command: []
+    # Cron-Dienst hat keinen Webserver -> geerbten HTTP-Healthcheck abschalten.
+    healthcheck:
+      disable: true
+
+  # Optionaler eigener HTTPS-Proxy (nur mit COMPOSE_PROFILES=tls)
+  caddy:
+    image: caddy:2
+    profiles: ["tls"]
+    restart: unless-stopped
+    depends_on:
+      - app
+    environment:
+      TLS_DOMAIN:    ${TLS_DOMAIN}
+      TLS_CERT_FILE: ${TLS_CERT_FILE:-fullchain.pem}
+      TLS_KEY_FILE:  ${TLS_KEY_FILE:-privkey.pem}
+    ports:
+      - "${TLS_HTTP_PORT:-80}:80"
+      - "${TLS_HTTPS_PORT:-443}:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./certs:/certs:ro
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  db_data:
+  caddy_data:
+  caddy_config:

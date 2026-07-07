@@ -1,0 +1,16 @@
+# WolfISMS – eigener HTTPS-Proxy mit selbst bereitgestellten Zertifikaten.
+# Wird nur genutzt, wenn in der .env  COMPOSE_PROFILES=tls  gesetzt ist.
+# Kein Let's Encrypt / kein ACME -> funktioniert vollständig intern/offline.
+
+{$TLS_DOMAIN} {
+    tls /certs/{$TLS_CERT_FILE} /certs/{$TLS_KEY_FILE}
+
+    encode gzip zstd
+
+    reverse_proxy app:8000 {
+        # Damit Flask/ProxyFix HTTPS erkennt und Secure-Cookies funktionieren:
+        header_up X-Forwarded-Proto {scheme}
+        header_up X-Forwarded-Host  {host}
+        header_up X-Real-IP         {remote_host}
+    }
+}

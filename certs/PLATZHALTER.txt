@@ -1,0 +1,5 @@
+Nur relevant im Eigen-TLS-Modus (COMPOSE_PROFILES=tls).
+Hier Ihr Zertifikat und den Schlüssel ablegen, z. B.:
+  fullchain.pem   (Zertifikat / Kette)
+  privkey.pem     (privater Schlüssel)
+Dateinamen sind über TLS_CERT_FILE / TLS_KEY_FILE in der .env einstellbar.

@@ -1,0 +1,42 @@
+# ==========================================================
+#  WolfISMS Test-Stack (Schritt 3) – nach ".env" kopieren
+# ==========================================================
+
+WEBPATH=
+
+# Lokal in Schritt 2 gebautes Image
+WOLFISMS_IMAGE=wolfisms:release
+
+# --- Datenbank (Container) ---
+# Der DB-Container legt den User "isms" selbst an. Das DUMP enthält nur
+# Daten/Schema, NICHT die MySQL-Benutzer – deshalb hier frei wählbar.
+# Wichtig: DB_PASSWORD (App) == MARIADB_PASSWORD (DB), was hier automatisch
+# passt, weil beide dieselbe Variable lesen.
+DB_NAME=
+DB_USER=
+DB_PASSWORD=
+DB_ROOT_PASSWORD=
+
+# --- App-Konfiguration ---
+# Für den /login-200-Test unkritisch. Leer = root-relative Links.
+# Die volle URL kommt erst mit Caddy in Schritt 4.
+WEBPATH=
+ENGLISCH=true
+
+# SSO für den Test AUS -> es werden keine OAuth-Zugangsdaten benötigt.
+# (Wir prüfen App-Start + DB, nicht SSO.)
+MS_AUTH=false
+MS_CLIENT_ID=
+MS_CLIENT_SECRET=
+
+
+GOOGLE_AUTH=true
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+
+SSO_ALLOWED_DOMAINS=
+SSO_AUTO_CREATE=false
+
+# Stabiler Session-Key (erzeugen mit:
+#   python3 -c "import secrets;print(secrets.token_hex(32))" )
+ISMS_SECRET_KEY=
