@@ -8,4 +8,4 @@ Erzeugen auf dem ISMS-Server:
   sudo mariadb-dump --single-transaction --routines --triggers isms > isms_dump.sql
 
 Übertragen:
-  scp isms_dump.sql wolf@docker:~/wolfisms-stack/db-init/
+  scp isms_dump.sql wolf@docker:~/wolfisms-isms/db-init/
