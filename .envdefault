@@ -5,7 +5,7 @@
 WEBPATH=
 
 # Lokal in Schritt 2 gebautes Image
-WOLFISMS_IMAGE=wolfisms:release
+WOLFISMS_IMAGE=wolfschuster/wolfisms:release
 
 # --- Datenbank (Container) ---
 # Der DB-Container legt den User "isms" selbst an. Das DUMP enthält nur
