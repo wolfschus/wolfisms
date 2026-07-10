@@ -1,4 +1,4 @@
-# wolfisms-isms
+# wolfisms
 WolfISMS Dockercontainer
 
 Ein Informationssicherheitsmanagementsystem
