@@ -13,10 +13,10 @@ WOLFISMS_IMAGE=wolfschuster/wolfisms:release
 # Daten/Schema, NICHT die MySQL-Benutzer – deshalb hier frei wählbar.
 # Wichtig: DB_PASSWORD (App) == MARIADB_PASSWORD (DB), was hier automatisch
 # passt, weil beide dieselbe Variable lesen.
-DB_NAME=
-DB_USER=
-DB_PASSWORD=
-DB_ROOT_PASSWORD=
+DB_NAME=isms
+DB_USER=isms
+DB_PASSWORD=tbbsw808
+DB_ROOT_PASSWORD=oieheogh47651
 
 # --- App-Konfiguration ---
 # Für den /login-200-Test unkritisch. Leer = root-relative Links.
