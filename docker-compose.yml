@@ -1,10 +1,7 @@
 # ============================================================
-#  WolfISMS – Stack
-#  Zwei Betriebsmodi, umschaltbar in der .env über COMPOSE_PROFILES:
-#    (leer)  = hinter externem Reverse Proxy (z. B. Nginx Proxy Manager)
-#              -> App-Port wird veröffentlicht, KEIN Caddy.
-#    tls     = eigener HTTPS-Proxy (Caddy) mit selbst bereitgestellten
-#              Zertifikaten -> Caddy terminiert TLS auf 443.
+#  WolfISMS-Stack – Betrieb hinter dem NPM-Container (gemeinsames Netz)
+#  Kein veröffentlichter App-Port. NPM erreicht die App über ${PROXY_ALIAS}.
+#  Lizenz: pro Umgebung eigene ./license/customer.lic (nicht im Image!).
 # ============================================================
 services:
 
@@ -19,6 +16,8 @@ services:
     volumes:
       - db_data:/var/lib/mysql
       - ./db-init:/docker-entrypoint-initdb.d:ro
+    networks:
+      - default
     healthcheck:
       test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
       interval: 10s
@@ -27,7 +26,7 @@ services:
       start_period: 30s
 
   app:
-    image: ${WOLFISMS_IMAGE:-wolfisms:release}
+    image: ${WOLFISMS_IMAGE:-wolfschuster/wolfisms:release}
     restart: unless-stopped
     depends_on:
       db:
@@ -37,13 +36,17 @@ services:
     environment:
       DB_HOST: db
       WOLFISMS_CONTAINER: "1"
-    # NPM-Modus: 0.0.0.0 (extern erreichbar). TLS-Modus: 127.0.0.1 (nur lokal;
-    # Caddy erreicht die App ohnehin intern über den Servicenamen).
-    ports:
-      - "${APP_BIND:-0.0.0.0}:${APP_PORT:-8000}:8000"
+    volumes:
+      # Lizenz dieser Umgebung (eigene Datei je Stack, überschreibt Image):
+      - ./license/customer.lic:/var/www/isms/license/customer.lic:rw
+    networks:
+      default: {}
+      proxy:
+        aliases:
+          - ${PROXY_ALIAS:?PROXY_ALIAS fehlt in der .env}
 
   cron:
-    image: ${WOLFISMS_IMAGE:-wolfisms:release}
+    image: ${WOLFISMS_IMAGE:-wolfschuster/wolfisms:release}
     restart: unless-stopped
     depends_on:
       db:
@@ -53,33 +56,20 @@ services:
     environment:
       DB_HOST: db
       WOLFISMS_CONTAINER: "1"
+    volumes:
+      - ./license/customer.lic:/var/www/isms/license/customer.lic:ro
     entrypoint: ["/usr/local/bin/wolfisms-cron-entry.sh"]
     command: []
-    # Cron-Dienst hat keinen Webserver -> geerbten HTTP-Healthcheck abschalten.
+    networks:
+      - default
     healthcheck:
       disable: true
 
-  # Optionaler eigener HTTPS-Proxy (nur mit COMPOSE_PROFILES=tls)
-  caddy:
-    image: caddy:2
-    profiles: ["tls"]
-    restart: unless-stopped
-    depends_on:
-      - app
-    environment:
-      TLS_DOMAIN:    ${TLS_DOMAIN}
-      TLS_CERT_FILE: ${TLS_CERT_FILE:-fullchain.pem}
-      TLS_KEY_FILE:  ${TLS_KEY_FILE:-privkey.pem}
-    ports:
-      - "${TLS_HTTP_PORT:-80}:80"
-      - "${TLS_HTTPS_PORT:-443}:443"
-    volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile:ro
-      - ./certs:/certs:ro
-      - caddy_data:/data
-      - caddy_config:/config
+networks:
+  default:
+  proxy:
+    external: true
+    name: proxy
 
 volumes:
   db_data:
-  caddy_data:
-  caddy_config:
