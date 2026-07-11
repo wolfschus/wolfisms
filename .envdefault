@@ -2,6 +2,7 @@
 #  WolfISMS Test-Stack (Schritt 3) – nach ".env" kopieren
 # ==========================================================
 
+PROXY_ALIAS=
 WEBPATH=
 
 # Lokal in Schritt 2 gebautes Image
@@ -20,7 +21,6 @@ DB_ROOT_PASSWORD=
 # --- App-Konfiguration ---
 # Für den /login-200-Test unkritisch. Leer = root-relative Links.
 # Die volle URL kommt erst mit Caddy in Schritt 4.
-WEBPATH=
 ENGLISCH=true
 
 # SSO für den Test AUS -> es werden keine OAuth-Zugangsdaten benötigt.
