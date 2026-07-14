@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Erstellungszeit: 11. Jul 2026 um 05:30
+-- Erstellungszeit: 14. Jul 2026 um 13:18
 -- Server-Version: 11.8.6-MariaDB-5 from Ubuntu
 -- PHP-Version: 8.5.4
 
@@ -1508,8 +1508,8 @@ CREATE TABLE `mass_anhaenge` (
 
 CREATE TABLE `Normen` (
   `id` int(11) UNSIGNED NOT NULL,
-  `Norm` varchar(32) NOT NULL,
-  `Kapitel` varchar(64) DEFAULT NULL,
+  `Norm` varchar(256) NOT NULL,
+  `Kapitel` varchar(256) DEFAULT NULL,
   `Nummer` varchar(24) DEFAULT NULL,
   `Titel` varchar(256) DEFAULT NULL,
   `Beschreibung` text DEFAULT NULL,
