@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Erstellungszeit: 14. Jul 2026 um 13:18
+-- Erstellungszeit: 15. Jul 2026 um 12:00
 -- Server-Version: 11.8.6-MariaDB-5 from Ubuntu
 -- PHP-Version: 8.5.4
 
@@ -2025,7 +2025,8 @@ CREATE TABLE `users` (
   `rolle` int(11) NOT NULL DEFAULT 0,
   `totp_secret` varchar(64) DEFAULT NULL,
   `totp_active` tinyint(1) NOT NULL DEFAULT 0,
-  `kontakte` tinyint(4) DEFAULT 0
+  `kontakte` tinyint(4) DEFAULT 0,
+  `aktiv` tinyint(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_german2_ci;
 
 -- --------------------------------------------------------
