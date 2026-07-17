@@ -3,8 +3,8 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Erstellungszeit: 15. Jul 2026 um 12:00
--- Server-Version: 11.8.6-MariaDB-5 from Ubuntu
+-- Erstellungszeit: 17. Jul 2026 um 04:20
+-- Server-Version: 11.8.6-MariaDB-5ubuntu0.1 from Ubuntu
 -- PHP-Version: 8.5.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
@@ -1852,8 +1852,8 @@ INSERT INTO `risiko_status` (`id`, `status`) VALUES
 (3, 'Bewertet'),
 (4, 'benötigt Neubewertung'),
 (5, 'archiviert'),
-(6, 'umgesetzt'),
-(7, 'in Umsetzung');
+(6, 'behandelt'),
+(7, 'in Behandlung');
 
 -- --------------------------------------------------------
 
