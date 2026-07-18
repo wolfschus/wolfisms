@@ -1,14 +1,26 @@
-# wolfisms
-WolfISMS Dockercontainer
+# WolfISMS
 
-Ein Informationssicherheitsmanagementsystem
+Ein Informationssicherheitsmanagementsystem (ISMS) als Docker-Container.
 
-nach dem clonen im Verzeichnis
+## Installation
 
+```bash
+git clone <repo-url>
+cd WolfISMS
 cp .envdefault .env
+```
 
-.env editieren
+`.env` bearbeiten und Werte anpassen.
 
-ggf. Zertifikate nach certs kopieren
+Falls benötigt, Zertifikate nach `certs/` kopieren.
 
+```bash
 docker compose up -d
+```
+
+## Voraussetzungen
+
+- Docker
+- Docker Compose
+</content>
+</invoke>
