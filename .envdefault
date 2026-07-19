@@ -22,6 +22,7 @@ DB_ROOT_PASSWORD=oieheogh47651
 # Für den /login-200-Test unkritisch. Leer = root-relative Links.
 # Die volle URL kommt erst mit Caddy in Schritt 4.
 ENGLISCH=true
+DEUTSCH=true
 
 # SSO für den Test AUS -> es werden keine OAuth-Zugangsdaten benötigt.
 # (Wir prüfen App-Start + DB, nicht SSO.)
