@@ -1,7 +1,10 @@
 # ============================================================
 #  WolfISMS-Stack – Betrieb hinter dem NPM-Container (gemeinsames Netz)
 #  Kein veröffentlichter App-Port. NPM erreicht die App über ${PROXY_ALIAS}.
-#  Lizenz: pro Umgebung eigene ./license/customer.lic (nicht im Image!).
+#  Lizenz: ./license wird als Verzeichnis gemountet (Daten je Umgebung).
+#    - Ohne customer.lic startet die App im Einzelusermodus.
+#    - Der Lizenz-Upload im Admin-Bereich legt customer.lic dauerhaft ab.
+#    - license-init kopiert license_public.pem beim ersten Start aus dem Image.
 # ============================================================
 services:
 
@@ -25,19 +28,32 @@ services:
       retries: 30
       start_period: 30s
 
+  # Einmaliger Init-Lauf: stellt sicher, dass license_public.pem im
+  # Host-Verzeichnis ./license liegt (der Verzeichnis-Mount überdeckt
+  # sonst die im Image mitgelieferte Datei).
+  license-init:
+    image: ${WOLFISMS_IMAGE:-wolfschuster/wolfisms:release}
+    entrypoint: ["/bin/sh", "-c",
+      "[ -f /host-license/license_public.pem ] || cp /var/www/isms/license/license_public.pem /host-license/"]
+    volumes:
+      - ./license:/host-license
+    restart: "no"
+
   app:
     image: ${WOLFISMS_IMAGE:-wolfschuster/wolfisms:release}
     restart: unless-stopped
     depends_on:
       db:
         condition: service_healthy
+      license-init:
+        condition: service_completed_successfully
     env_file:
       - .env
     environment:
       DB_HOST: db
       WOLFISMS_CONTAINER: "1"
     volumes:
-      # Lizenz dieser Umgebung (eigene Datei je Stack, überschreibt Image):
+      # Lizenzverzeichnis dieser Umgebung (customer.lic + license_public.pem):
       - ./license:/var/www/isms/license:rw
     networks:
       default: {}
@@ -51,6 +67,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      license-init:
+        condition: service_completed_successfully
     env_file:
       - .env
     environment:
