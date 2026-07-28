@@ -38,7 +38,7 @@ services:
       WOLFISMS_CONTAINER: "1"
     volumes:
       # Lizenz dieser Umgebung (eigene Datei je Stack, überschreibt Image):
-      - ./license/customer.lic:/var/www/isms/license/customer.lic:rw
+      - ./license:/var/www/isms/license:rw
     networks:
       default: {}
       proxy:
@@ -57,7 +57,7 @@ services:
       DB_HOST: db
       WOLFISMS_CONTAINER: "1"
     volumes:
-      - ./license/customer.lic:/var/www/isms/license/customer.lic:ro
+      - ./license:/var/www/isms/license:ro
     entrypoint: ["/usr/local/bin/wolfisms-cron-entry.sh"]
     command: []
     networks:
