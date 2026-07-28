@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Erstellungszeit: 28. Jul 2026 um 05:30
+-- Erstellungszeit: 28. Jul 2026 um 09:32
 -- Server-Version: 11.8.6-MariaDB-5ubuntu0.1 from Ubuntu
 -- PHP-Version: 8.5.4
 
@@ -2275,7 +2275,7 @@ CREATE TABLE `users` (
   `risk` tinyint(1) NOT NULL DEFAULT 0,
   `vendor` tinyint(1) NOT NULL DEFAULT 0,
   `audit` tinyint(1) NOT NULL DEFAULT 0,
-  `abteilung` varchar(80) NOT NULL,
+  `abteilung` varchar(80) DEFAULT NULL,
   `norm` tinyint(1) NOT NULL DEFAULT 0,
   `pers` tinyint(1) NOT NULL DEFAULT 0,
   `sso_provider` varchar(20) DEFAULT NULL,
