@@ -1,6 +1,8 @@
 Auf dem Docker-Host einmalig:
 
+```bash
 docker network create proxy
+```
 
 Verreichnis npm anlegen und darin docker-compose.yml anlegen:
 
@@ -29,15 +31,17 @@ volumes:
   npm_letsencrypt:
 ```
 
+```bash
 docker compose up -d
-
+```
 
 
 http://dockerserver:81
 
-5. Proxy Host in NPM
+Proxy Host in NPM
 Hosts → Proxy Hosts → Add Proxy Host:
 
+```bash
 Feld	Wert
 Domain Names	isms.deine-domain.tld
 Scheme	http
@@ -45,6 +49,7 @@ Forward Hostname	wolfisms-app (dein PROXY_ALIAS)
 Forward Port	80
 Block Common Exploits	an
 Websockets Support	an
+```
 
 https ist Plicht, also Zertifikat für den Host anlegen.
 
