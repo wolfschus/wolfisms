@@ -4,6 +4,7 @@ docker network create proxy
 
 Verreichnis npm anlegen und darin docker-compose.yml anlegen:
 
+```bash
 services:
   npm:
     image: jc21/nginx-proxy-manager:2
@@ -26,6 +27,7 @@ networks:
 volumes:
   npm_data:
   npm_letsencrypt:
+```
 
 docker compose up -d
 
