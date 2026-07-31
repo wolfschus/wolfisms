@@ -31,7 +31,7 @@ docker compose up -d
 
 
 
-http://<server>:81
+http://dockerserver:81
 
 5. Proxy Host in NPM
 Hosts → Proxy Hosts → Add Proxy Host:
