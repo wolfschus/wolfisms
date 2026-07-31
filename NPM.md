@@ -44,4 +44,6 @@ Forward Port	80
 Block Common Exploits	an
 Websockets Support	an
 
+https ist Plicht, also Zertifikat für den Host anlegen.
+
 Im Reiter SSL: „Request a new SSL Certificate", Force SSL und HTTP/2 an. Let's Encrypt braucht dafür, dass deine Domain öffentlich auf die Host-IP zeigt und Port 80 von außen erreichbar ist — sonst musst du auf eine DNS-Challenge ausweichen.
