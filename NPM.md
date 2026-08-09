@@ -46,7 +46,7 @@ Feld	Wert
 Domain Names	isms.deine-domain.tld
 Scheme	http
 Forward Hostname	wolfisms-app (dein PROXY_ALIAS)
-Forward Port	80
+Forward Port	8000
 Block Common Exploits	an
 Websockets Support	an
 ```

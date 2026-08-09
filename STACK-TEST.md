@@ -5,7 +5,7 @@ einem Dump Ihrer Live-DB befüllt wird. Erfolgskriterium: `/login` liefert
 **HTTP 200** (das beweist zugleich, dass die DB erreichbar ist – die Login-Seite
 liest per SELECT aus der Datenbank).
 
-**Noch nicht Ziel:** voller Browser-Login (braucht HTTPS → Schritt 4 mit Caddy).
+**Noch nicht Ziel:** voller Browser-Login (braucht HTTPS → siehe `NPM.md`).
 Ihre Produktiv-DB wird nur gelesen (Dump), nie verändert.
 
 ---
@@ -26,7 +26,7 @@ läuft ungestört weiter.
 mkdir -p ~/wolfisms-stack/db-init && cd ~/wolfisms-stack
 
 # Stack-Dateien hierher kopieren:
-#   docker-compose.yml   .env.example
+#   docker-compose.yml   .envdefault
 # Dump in db-init/ legen:
 scp benutzer@isms-server:~/isms_dump.sql db-init/     # oder manuell kopieren
 ```
@@ -45,12 +45,17 @@ Ergebnis:
 ## 3. .env anlegen
 
 ```bash
-cp .env.example .env
+cp .envdefault .env
 ```
 Dann in `.env` setzen:
+- `PROXY_ALIAS` (Name, unter dem NPM die App erreicht – ohne diesen Wert
+  bricht `docker compose up` sofort ab)
 - `DB_PASSWORD` und `DB_ROOT_PASSWORD` (frei wählbar – der DB-Container legt den
   User selbst an; der Dump enthält keine Benutzer)
-- `ISMS_SECRET_KEY` (erzeugen: `python3 -c "import secrets;print(secrets.token_hex(32))"`)
+- `WEBPATH` (öffentliche URL der Instanz, wird für Mail-Links gebraucht)
+
+`ISMS_SECRET_KEY` kann leer bleiben – die App erzeugt den Schlüssel selbst und
+legt ihn im Volume `sessions` ab.
 
 ---
 
@@ -71,10 +76,21 @@ docker compose logs -f db      # bis "ready for connections"
 
 ## 5. Testen
 
+Der Stack veröffentlicht keinen Port auf dem Host – die App ist nur über das
+Docker-Netz erreichbar. Der Test läuft deshalb im Container:
+
 ```bash
 # HTTP-Status der Login-Seite (erwartet: 200)
-curl -s -o /dev/null -w "%{http_code}\n" http://127.0.0.1:8000/login
+docker compose exec app curl -s -o /dev/null -w "%{http_code}\n" http://127.0.0.1:8000/login
+```
 
+Dasselbe prüft der im Image hinterlegte Healthcheck automatisch:
+
+```bash
+docker compose ps      # app muss "Up (healthy)" sein
+```
+
+```bash
 # App-Logs
 docker compose logs app
 ```
@@ -97,9 +113,10 @@ docker compose down -v         # ALLES weg inkl. DB-Volume (Dump wird neu einges
 
 ## Was Sie NICHT erwarten sollten
 
-`http://DOCKER-HOST:8000` im Browser: Die Seite lädt (200), aber der Login geht
-noch nicht durch – `SESSION_COOKIE_SECURE=True` verlangt HTTPS. Das ist normal
-und wird in Schritt 4 (Caddy) gelöst. Für Schritt 3 zählt nur der 200er.
+`http://DOCKER-HOST:8000` im Browser: Es gibt keinen veröffentlichten Port,
+die Adresse antwortet nicht. Und selbst über NPM geht der Login erst durch,
+wenn dort HTTPS aktiv ist – `SESSION_COOKIE_SECURE=True` verlangt es. Für
+diesen Test zählt nur der 200er aus dem Container.
 
 ---
 

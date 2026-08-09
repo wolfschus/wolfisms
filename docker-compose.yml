@@ -14,8 +14,8 @@ services:
     environment:
       MARIADB_DATABASE: ${DB_NAME}
       MARIADB_USER: ${DB_USER}
-      MARIADB_PASSWORD: ${DB_PASSWORD}
-      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MARIADB_PASSWORD: "${DB_PASSWORD:?DB_PASSWORD fehlt in der .env}"
+      MARIADB_ROOT_PASSWORD: "${DB_ROOT_PASSWORD:?DB_ROOT_PASSWORD fehlt in der .env}"
     volumes:
       - db_data:/var/lib/mysql
       - ./db-init:/docker-entrypoint-initdb.d:ro
@@ -55,6 +55,11 @@ services:
     volumes:
       # Lizenzverzeichnis dieser Umgebung (customer.lic + license_public.pem):
       - ./license:/var/www/isms/license:rw
+      # Hochgeladene Dateien - ohne Volume beim Neuanlegen des Containers weg:
+      - uploads:/var/www/isms/wolfisms/uploads
+      # Flask-Sessions inkl. .flask_secret_key - ohne Volume wird der Key neu
+      # erzeugt und alle Benutzer sind nach einem Update ausgeloggt:
+      - sessions:/var/www/isms/wolfisms/sessions
     networks:
       default: {}
       proxy:
@@ -91,3 +96,5 @@ networks:
 
 volumes:
   db_data:
+  uploads:
+  sessions:

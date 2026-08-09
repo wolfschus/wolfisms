@@ -1,11 +1,20 @@
 # ==========================================================
-#  WolfISMS Test-Stack (Schritt 3) – nach ".env" kopieren
+#  WolfISMS – Vorlage, nach ".env" kopieren und anpassen
+#  Alle mit ANPASSEN markierten Werte müssen gesetzt werden,
+#  sonst bricht "docker compose up" ab oder die App verhält
+#  sich falsch.
 # ==========================================================
 
+# ANPASSEN: Netzwerk-Alias, unter dem NPM die App im Netz "proxy"
+# erreicht. Genau dieser Name gehört im Proxy Host unter
+# "Forward Hostname", der Port dort ist 8000 (siehe NPM.md).
 PROXY_ALIAS=
-WEBPATH=
 
-# Lokal in Schritt 2 gebautes Image
+# ANPASSEN: Öffentliche Basis-URL der Instanz, ohne abschließenden "/".
+# Wird für die Links in Benachrichtigungs-Mails benutzt – bleibt sie leer,
+# verschicken Aufgaben- und Dokumenten-Mails Links ohne Hostnamen.
+WEBPATH=https://isms.deine-domain.tld
+
 WOLFISMS_IMAGE=wolfschuster/wolfisms:release
 
 # --- Datenbank (Container) ---
@@ -13,31 +22,35 @@ WOLFISMS_IMAGE=wolfschuster/wolfisms:release
 # Daten/Schema, NICHT die MySQL-Benutzer – deshalb hier frei wählbar.
 # Wichtig: DB_PASSWORD (App) == MARIADB_PASSWORD (DB), was hier automatisch
 # passt, weil beide dieselbe Variable lesen.
+# ANPASSEN: beide Passwörter setzen (erzeugen z. B. mit "openssl rand -hex 24").
 DB_NAME=isms
 DB_USER=isms
-DB_PASSWORD=tbbsw808
-DB_ROOT_PASSWORD=oieheogh47651
+DB_PASSWORD=
+DB_ROOT_PASSWORD=
 
-# --- App-Konfiguration ---
-# Für den /login-200-Test unkritisch. Leer = root-relative Links.
-# Die volle URL kommt erst mit Caddy in Schritt 4.
+# --- Sprache ---
 ENGLISCH=true
 DEUTSCH=true
 
-# SSO für den Test AUS -> es werden keine OAuth-Zugangsdaten benötigt.
-# (Wir prüfen App-Start + DB, nicht SSO.)
+# --- Single Sign-On ---
+# Beide Anbieter sind aus. Zum Aktivieren auf "true" setzen UND die
+# zugehörige Client-ID samt Secret eintragen – ein aktivierter Anbieter
+# ohne Zugangsdaten zeigt einen Login-Button, der beim Klick fehlschlägt.
 MS_AUTH=false
 MS_CLIENT_ID=
 MS_CLIENT_SECRET=
 
-
-GOOGLE_AUTH=true
+GOOGLE_AUTH=false
 GOOGLE_CLIENT_ID=
 GOOGLE_CLIENT_SECRET=
 
 SSO_ALLOWED_DOMAINS=
 SSO_AUTO_CREATE=false
 
-# Stabiler Session-Key (erzeugen mit:
-#   python3 -c "import secrets;print(secrets.token_hex(32))" )
+# --- Optional ---
+# Flask-Session-Key. Leer lassen ist in Ordnung: die App erzeugt dann beim
+# ersten Start selbst einen Schlüssel und legt ihn im Volume "sessions" ab,
+# er überlebt also Neustarts und Updates. Nur setzen, wenn derselbe Key
+# über mehrere Instanzen hinweg gelten soll (erzeugen mit:
+#   python3 -c "import secrets;print(secrets.token_hex(32))" ).
 ISMS_SECRET_KEY=

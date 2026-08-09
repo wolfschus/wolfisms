@@ -23,5 +23,4 @@ docker compose up -d
 - Docker
 - Docker Compose
 - NPM als Docker
-</content>
-</invoke>
+
