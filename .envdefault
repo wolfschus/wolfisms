@@ -33,18 +33,39 @@ ENGLISCH=true
 DEUTSCH=true
 
 # --- Single Sign-On ---
+# Alles in diesem Abschnitt lässt sich auch im Admin-Bereich unter
+# "SSO" (/admin/sso) pflegen. Ist dort der Schalter
+# "Einstellungen dieser Seite verwenden" gesetzt, gelten ausschließlich
+# die dort gespeicherten Werte – sie überschreiben diesen Abschnitt
+# vollständig, auch MS_AUTH und GOOGLE_AUTH. Ist er aus, gilt das, was
+# hier steht. Vorteil der Oberfläche: Änderungen greifen sofort, ohne
+# "docker compose up -d". Welche Quelle gerade wirkt, zeigt die Seite an.
+#
 # Beide Anbieter sind aus. Zum Aktivieren auf "true" setzen UND die
 # zugehörige Client-ID samt Secret eintragen – ein aktivierter Anbieter
 # ohne Zugangsdaten zeigt einen Login-Button, der beim Klick fehlschlägt.
+#
+# MS_TENANT_ID ist bei MS_AUTH=true Pflicht: Directory-(Tenant-)ID aus
+# Entra (GUID), alternativ eine verifizierte Domain oder "common".
+# Ohne diesen Wert findet die App den Anmeldedienst nicht.
 MS_AUTH=false
+MS_TENANT_ID=
 MS_CLIENT_ID=
 MS_CLIENT_SECRET=
 
 GOOGLE_AUTH=false
 GOOGLE_CLIENT_ID=
 GOOGLE_CLIENT_SECRET=
+# Optional: abweichende Redirect-URI. Leer = aus WEBPATH abgeleitet,
+# also "<WEBPATH>/auth/google/callback".
+GOOGLE_REDIRECT_URI=
 
+# Kommagetrennte Liste der E-Mail-Domains, die sich per SSO anmelden
+# dürfen. LEER heißt: niemand – ein eingeschaltetes SSO ohne Eintrag
+# weist jede Anmeldung ab.
 SSO_ALLOWED_DOMAINS=
+# true: unbekannte Benutzer werden bei der ersten SSO-Anmeldung
+# automatisch mit Nur-Lese-Recht angelegt.
 SSO_AUTO_CREATE=false
 
 # --- Optional ---

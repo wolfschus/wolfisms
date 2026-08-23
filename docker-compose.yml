@@ -60,6 +60,10 @@ services:
       # Flask-Sessions inkl. .flask_secret_key - ohne Volume wird der Key neu
       # erzeugt und alle Benutzer sind nach einem Update ausgeloggt:
       - sessions:/var/www/isms/wolfisms/sessions
+      # Hochgeladenes Branding (Logo, Header, Word-Vorlage, Briefpapier) -
+      # ohne Volume liegt es nur in der Container-Schicht und ist nach jedem
+      # Image-Update wieder auf die Auslieferungs-Defaults zurueckgesetzt:
+      - branding:/var/www/isms/branding
     networks:
       default: {}
       proxy:
@@ -98,3 +102,4 @@ volumes:
   db_data:
   uploads:
   sessions:
+  branding:
