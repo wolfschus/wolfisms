@@ -32,7 +32,7 @@ services:
   # Host-Verzeichnis ./license liegt (der Verzeichnis-Mount überdeckt
   # sonst die im Image mitgelieferte Datei).
   license-init:
-    image: ${WOLFISMS_IMAGE:-wolfschuster/wolfisms:release}
+    image: ${WOLFISMS_IMAGE:-wolfinfosecgmbh/wolfisms:release}
     entrypoint: ["/bin/sh", "-c",
       "[ -f /host-license/license_public.pem ] || cp /var/www/isms/license/license_public.pem /host-license/"]
     volumes:
@@ -40,7 +40,7 @@ services:
     restart: "no"
 
   app:
-    image: ${WOLFISMS_IMAGE:-wolfschuster/wolfisms:release}
+    image: ${WOLFISMS_IMAGE:-wolfinfosecgmbh/wolfisms:release}
     restart: unless-stopped
     depends_on:
       db:
@@ -71,7 +71,7 @@ services:
           - ${PROXY_ALIAS:?PROXY_ALIAS fehlt in der .env}
 
   cron:
-    image: ${WOLFISMS_IMAGE:-wolfschuster/wolfisms:release}
+    image: ${WOLFISMS_IMAGE:-wolfinfosecgmbh/wolfisms:release}
     restart: unless-stopped
     depends_on:
       db:
